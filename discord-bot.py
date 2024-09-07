@@ -9,8 +9,19 @@ from discord.ext import commands
 from discord.ui import View, Select
 
 # connect with u db (sqlite)
+bd_exists = os.path.exists("Discord.db")
 conn = sqlite3.connect("Discord.db")
 cursor = conn.cursor()
+if not bd_exists:
+    cursor.execute('''
+CREATE TABLE IF NOT EXISTS users (
+id INTEGER ,
+nickname TEXT,
+money INTEGER,
+lvl INTEGER,
+xp INTEGER
+)
+''')
 
 # env settings
 load_dotenv()
@@ -54,7 +65,7 @@ async def on_ready():
         cursor.execute(f"SELECT id FROM users where id={member.id}")  # проверка, существует ли участник в БД
         if cursor.fetchone() == None:  # Если не существует
             cursor.execute(
-                f"INSERT INTO users VALUES ({member.id}, '{member.name}', 0,'[]',1,0)")  # вводит все данные об участнике в БД
+                f"INSERT INTO users VALUES ({member.id}, '{member.name}', 0,1,0)")  # вводит все данные об участнике в БД
         else:  # если существует
             pass
         conn.commit()  # применение изменений в БД
@@ -107,7 +118,7 @@ async def on_member_join(member):
     cursor.execute(f"SELECT id FROM users where id={member.id}")  # все также, существует ли участник в БД
     if cursor.fetchone() == None:  # Если не существует
         cursor.execute(
-            f"INSERT INTO users VALUES ({member.id}, '{member.name}', 10,'[]',1,0)")  # вводит все данные об участнике в БД
+            f"INSERT INTO users VALUES ({member.id}, '{member.name}', 0,1,0)")  # вводит все данные об участнике в БД
     else:  # Если существует
         pass
     conn.commit()  # применение изменений в БД
