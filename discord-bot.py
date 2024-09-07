@@ -32,7 +32,7 @@ price_timeout = int(os.getenv('price_timeout'))
 price_case = int(os.getenv('price_case'))
 
 # random case
-list_chance = [8, 5, 5, 3, 3, 3, 1, 1, 1, 1]
+list_chance = [int(i) for i in os.getenv('list_chance').split(' ')]
 
 intents = discord.Intents.all()
 intents.message_content = True
@@ -276,7 +276,7 @@ async def select_callback(interaction: discord.Interaction):
                                                         f"использовать команду «timeout»", ephemeral=True)
             else:
                 await interaction.response.send_message(f"У вас недостаточно средств в банке.", ephemeral=True)
-    elif interaction.data["values"][0] == 'Открыть кейс за 3 монетки (возможность потерять монетки)':
+    elif interaction.data["values"][0] == 'Открыть кейс':
         random_prize = random.choice(list_chance)
         if check_balance(user_id=interaction.user.id, price=price_case, case=random_prize):
             await interaction.response.send_message(f"Вы открыли кейс! С него выпало {random_prize} монеток",
